@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>com.raphfrk</groupId>
+  <artifactId>craftproxylib</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20120401.230137</timestamp>
+      <buildNumber>4</buildNumber>
+    </snapshot>
+    <lastUpdated>20120401230137</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>1.0-20120401.230137-4</value>
+        <updated>20120401230137</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>1.0-20120401.230137-4</value>
+        <updated>20120401230137</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
