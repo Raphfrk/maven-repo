@@ -3,11 +3,12 @@
   <groupId>com.raphfrk</groupId>
   <artifactId>fakecraftbukkit</artifactId>
   <versioning>
-    <release>0.1.1</release>
+    <release>0.1.6</release>
     <versions>
       <version>0.1</version>
       <version>0.1.1</version>
+      <version>0.1.6</version>
     </versions>
-    <lastUpdated>20131228012718</lastUpdated>
+    <lastUpdated>20131230200831</lastUpdated>
   </versioning>
 </metadata>
