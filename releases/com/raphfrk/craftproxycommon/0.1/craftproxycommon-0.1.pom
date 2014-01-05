@@ -6,22 +6,35 @@
 	<groupId>com.raphfrk</groupId>
 	<artifactId>craftproxycommon</artifactId>
 	<version>0.1</version>
-	<url>http://raphfrk.com</url>
+	<packaging>jar</packaging>
 	<inceptionYear>2013</inceptionYear>
-	<description>Common CraftProxy classes</description>
+	<url>https://github.com/Raphfrk/CraftProxyCommon</url>
+	<description>Common classes for local caching of chunk data</description>
 
+	<!-- Build properties -->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<buildNumber>0</buildNumber>
+		<ciSystem>unknown</ciSystem>
+		<commit>unknown</commit>
+		<mainClass>${project.groupId}.${project.artifactId}.${project.name}</mainClass>
 	</properties>
 
-	<!-- Organization -->
 	<organization>
 		<name>Raphfrk</name>
 		<url>http://raphfrk.com</url>
 	</organization>
 
-	<!-- Repositories -->
+	<!-- Project developers -->
+	<developers>
+		<developer>
+			<id>Raphfrk</id>
+			<name>Raphfrk</name>
+			<email>raphfrk@gmail.com</email>
+		</developer>
+	</developers>
 
+	<!-- Dependency repositories -->
 	<distributionManagement>
 		<repository>
 			<id>repo</id>
@@ -33,8 +46,29 @@
 		</snapshotRepository>
 	</distributionManagement>
 
-	<!-- Dependencies -->
+	<!-- Build plugin repositories -->
+	<pluginRepositories>
+		<pluginRepository>
+			<id>sonatype-nexus-releases</id>
+			<url>https://oss.sonatype.org/content/repositories/releases</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>sonatype-nexus-snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<!-- Project dependencies -->
 	<dependencies>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1</version>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -54,134 +88,149 @@
 		</dependency>
 	</dependencies>
 
-	<!-- Build settings -->
+	<!-- Build configuration -->
 	<build>
-		<defaultGoal>clean package</defaultGoal>
-		<!-- Resources -->
+		<defaultGoal>clean install</defaultGoal>
+
+		<!-- Resources to include -->
 		<resources>
+			<!-- Static resources -->
 			<resource>
-				<targetPath>.</targetPath>
 				<filtering>false</filtering>
-				<directory>${basedir}</directory>
+				<directory>.</directory>
+				<targetPath>.</targetPath>
 				<includes>
 					<include>LICENSE.txt</include>
 				</includes>
 			</resource>
 			<resource>
-				<directory>src/resources</directory>
+				<filtering>false</filtering>
+				<directory>src/main/resources</directory>
+				<targetPath>.</targetPath>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+			<!-- Filtered resources -->
+			<resource>
+				<filtering>true</filtering>
+				<directory>src/main/resources</directory>
+				<targetPath>.</targetPath>
+				<includes>
+					<include>*.yml</include>
+				</includes>
 			</resource>
 		</resources>
-		<!-- Plugins -->
+
+		<!-- Build plugins -->
 		<plugins>
-			<!-- License header formatting plugin -->
+			<!-- License header plugin -->
 			<plugin>
 				<groupId>com.mycila.maven-license-plugin</groupId>
 				<artifactId>maven-license-plugin</artifactId>
 				<version>1.10.b1</version>
 				<executions>
 					<execution>
+						<configuration>
+							<properties>
+								<name>${project.name}</name>
+								<url>${project.organization.url}</url>
+								<inceptionYear>${project.inceptionYear}</inceptionYear>
+								<organization>${project.organization.name}</organization>
+							</properties>
+							<quiet>true</quiet>
+							<encoding>UTF-8</encoding>
+							<strictCheck>true</strictCheck>
+							<header>HEADER.txt</header>
+							<mapping>
+								<java>SLASHSTAR_STYLE</java>
+							</mapping>
+							<keywords>
+								<keyword>${project.name}</keyword>
+								<keyword>license</keyword>
+							</keywords>
+							<includes>
+								<include>src/main/java/**</include>
+								<include>src/test/java/**</include>
+							</includes>
+							<properties>
+								<name>${project.name}</name>
+								<url>${project.organization.url}</url>
+								<copyright>Copyright (c) ${project.inceptionYear}-2014, ${project.organization.name}</copyright>
+							</properties>
+						</configuration>
 						<phase>clean</phase>
 						<goals>
 							<goal>format</goal>
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<quiet>true</quiet>
-					<encoding>UTF-8</encoding>
-					<strictCheck>true</strictCheck>
-					<header>${basedir}/HEADER.txt</header>
-					<keywords>
-						<keyword>${project.name}</keyword>
-						<keyword>license</keyword>
-					</keywords>
-					<mapping>
-						<java>SLASHSTAR_STYLE</java>
-					</mapping>
-					<properties>
-						<name>${project.name}</name>
-						<url>${project.organization.url}</url>
-						<copyright>Copyright (c) ${project.inceptionYear}-2014, ${project.organization.name}</copyright>
-					</properties>
-					<includes>
-						<include>src/main/java/**</include>
-						<include>src/test/java/**</include>
-					</includes>
-				</configuration>
 			</plugin>
-			<!-- Version strip plugin -->
-			<plugin>
-				<groupId>com.sourcesense.maven</groupId>
-				<artifactId>maven-nosnapshot-plugin</artifactId>
-				<version>0.0.7-SNAPSHOT</version>
-				<executions>
-					<execution>
-						<phase>initialize</phase>
-						<goals>
-							<goal>strip</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<version>${project.version}</version>
-					<propertyName>releaseVersion</propertyName>
-				</configuration>
-			</plugin>
-			<!-- Compiler plugin -->
+			<!-- Source compiler plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.4</version>
+				<version>3.1</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
 					<compilerArguments>
 						<O>-Xlint:all</O>
 						<O>-Xlint:-path</O>
+						<O>-Xlint:unchecked</O>
 					</compilerArguments>
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
 				</configuration>
 			</plugin>
-			<!-- Testing plugin -->
+			<!-- JAR creation plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Main-Class>${mainClass}</Main-Class>
+							<Implementation-Title>${project.name}</Implementation-Title>
+							<Implementation-Version>${project.version}+${ciSystem}-b${buildNumber}.git-${commit}</Implementation-Version>
+							<Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+							<Build-Number>${env.BUILD_ID}</Build-Number>
+							<Specification-Title>${project.name}</Specification-Title>
+							<Specification-Version>${project.version}+${ciSystem}-b${buildNumber}.git-${commit}</Specification-Version>
+							<Specification-Vendor>${project.organization.name}</Specification-Vendor>
+							<Sealed>true</Sealed>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<!-- Surefire report test -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.12</version>
+				<version>2.15</version>
+				<configuration>
+					<systemPropertyVariables>
+						<protocol>${protocolVersion}</protocol>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<!-- Reporting configuration -->
+	<reporting>
+		<!-- Reporting plugins -->
+		<plugins>
+			<!-- Surefire report plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.15</version>
 				<configuration>
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>
 				</configuration>
 			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<!-- Eclipse exclusions -->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>com.sourcesense.maven</groupId>
-										<artifactId>maven-nosnapshot-plugin</artifactId>
-										<versionRange>[0.0.7-SNAPSHOT,)</versionRange>
-										<goals>
-											<goal>strip</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
-
+	</reporting>
 </project>
